@@ -3,17 +3,15 @@ import { Text, View, StyleSheet, StatusBar, TextInput, Platform, Pressable, Scro
 import Slider from '@react-native-community/slider';
 import { MaterialIcons } from '@expo/vector-icons';
 
-
-
 const statusBarHeight = StatusBar.currentHeight;
 
-export default function Index() {
+export default function Index({ navigation }: any) {
   const [city, setCity] = useState('');
   const [days, setDays] = useState(3);
   const [loading, setLoading] = useState(false);
   const [travel, setTravel] = useState('');
 
-  const KEY_GPT = "Minha chave";
+  const KEY_GPT = "Minha Chave";
 
   async function handleGenerate() {
     if (city === "") {
@@ -75,7 +73,7 @@ export default function Index() {
           <Slider
             minimumValue={1}
             maximumValue={7}
-            minimumTrackTintColor="#009688"
+            minimumTrackTintColor="#1089D3"
             maximumTrackTintColor="#000000"
             value={days}
             onValueChange={setDays}
@@ -83,15 +81,26 @@ export default function Index() {
         </View>
 
         <Pressable
-            style={[styles.button, loading && { backgroundColor: '#aaa' }]}
-            onPress={handleGenerate}
-            disabled={loading}
-          >
-            {loading ? <ActivityIndicator color="#fff" /> : <>
+          style={[styles.button, loading && { backgroundColor: '#aaa' }]}
+          onPress={handleGenerate}
+          disabled={loading}
+        >
+          {loading ? <ActivityIndicator color="#fff" /> : (
+            <>
               <Text style={styles.buttonText}>Gerar roteiro</Text>
               <MaterialIcons name="travel-explore" size={24} color="#fff" />
-            </>}
-          </Pressable>
+            </>
+          )}
+        </Pressable>
+
+        {/* Corrigido o botão de Logout */}
+        <Pressable
+          style={[styles.button, { backgroundColor: '#555' }]}
+          onPress={() => navigation.replace('Login')}
+        >
+          <Text style={styles.buttonText}>Sair</Text>
+          <MaterialIcons name="exit-to-app" size={24} color="#fff" />
+        </Pressable>
 
         <ScrollView contentContainerStyle={{ paddingBottom: 18, marginTop: 4 }} style={styles.containerScroll} showsVerticalScrollIndicator={false}>
           {loading && (
@@ -122,7 +131,7 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#1089D3',
     marginBottom: 20,
     paddingTop: Platform.OS === 'android' ? statusBarHeight : 54,
   },
@@ -155,7 +164,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f1f1f1"
   },
   button: {
-    backgroundColor: '#333',
+    backgroundColor: '#1089D3',
     padding: 14,
     borderRadius: 10,
     width: '100%',

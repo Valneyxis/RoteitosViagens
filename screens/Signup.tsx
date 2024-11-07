@@ -1,17 +1,22 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Linking } from 'react-native';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 
-export default function LoginScreen({ navigation }: any) {
-  const handleLogin = () => {
+export default function SingupScreen({ navigation }: any) {
+  const handleSingup = () => {
     navigation.replace('Splash');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Login</Text>
+      <Text style={styles.heading}>Criar conta</Text>
       <View style={styles.form}>
+
+      <TextInput
+          style={styles.input}
+          placeholder="nome"
+        />
+
         <TextInput
           style={styles.input}
           placeholder="E-mail"
@@ -22,24 +27,15 @@ export default function LoginScreen({ navigation }: any) {
           placeholder="Senha"
           secureTextEntry
         />
-        <TouchableOpacity style={styles.forgotPassword} onPress={() => Linking.openURL('#')} accessible={true} accessibilityRole="link">
-          <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
+        <TouchableOpacity style={styles.loginButton} onPress={handleSingup}>
+          <Text style={styles.loginButtonText}>Criar</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Entrar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.singup} onPress={() => navigation.replace('Singup')}>
-          <Text style={styles.singupText}>Criar conta</Text>
+
+        <TouchableOpacity style={styles.singup} onPress={() => navigation.replace('Login')}>
+          <Text style={styles.singupTextExit}>Voltar</Text>
         </TouchableOpacity>
       </View>
-      <View style={styles.socialAccountContainer}>
-        <Text style={styles.socialAccountTitle}>Or Sign in with</Text>
-        <View style={styles.socialAccounts}>
-          <TouchableOpacity style={styles.socialButton}>
-            <AntDesign name="google" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </View>
+
     </View>
   );
 }
@@ -108,6 +104,11 @@ const styles = StyleSheet.create({
     color: '#0099ff',
     textDecorationLine: 'none',
   },
+
+  singupTextExit:{
+    fontSize: 14,
+    color: '#0099ff',
+    },
 
   socialAccountContainer: {
     marginTop: 17,

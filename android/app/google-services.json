@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "629823629277",
+    "project_id": "roteiroviagens-ea228",
+    "storage_bucket": "roteiroviagens-ea228.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629823629277:android:e34c2ea8e58e3f6f7bf834",
+        "android_client_info": {
+          "package_name": "com.roteiro.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvxhjkqa7XULvXCjyfIj0jRXKm1E9DGyI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
