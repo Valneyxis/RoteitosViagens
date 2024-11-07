@@ -1,10 +1,35 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../services/firebaseConfig'; 
 
+export default function SignupScreen({ navigation }: any) {
+  const [name, setName] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [error, setError] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
-export default function SingupScreen({ navigation }: any) {
-  const handleSingup = () => {
-    navigation.replace('Splash');
+  const handleSignup = () => {
+    if (password !== confirmPassword) {
+      setError("As senhas não coincidem");
+      return;
+    }
+
+    setLoading(true);
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log("Usuário criado:", user);
+        navigation.replace('Splash'); 
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        setError(errorMessage);
+        console.error("Erro ao criar conta:", errorMessage);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -12,30 +37,47 @@ export default function SingupScreen({ navigation }: any) {
       <Text style={styles.heading}>Criar conta</Text>
       <View style={styles.form}>
 
-      <TextInput
+        <TextInput
           style={styles.input}
-          placeholder="nome"
+          placeholder="Nome"
+          value={name}
+          onChangeText={(val) => setName(val)}
         />
 
         <TextInput
           style={styles.input}
           placeholder="E-mail"
           keyboardType="email-address"
+          value={email}
+          onChangeText={(val) => setEmail(val)}
         />
+
         <TextInput
           style={styles.input}
           placeholder="Senha"
           secureTextEntry
+          value={password}
+          onChangeText={(val) => setPassword(val)}
         />
-        <TouchableOpacity style={styles.loginButton} onPress={handleSingup}>
-          <Text style={styles.loginButtonText}>Criar</Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Confirmar Senha"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={(val) => setConfirmPassword(val)}
+        />
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        <TouchableOpacity style={styles.loginButton} onPress={handleSignup} disabled={loading}>
+          <Text style={styles.loginButtonText}>{loading ? "Criando..." : "Criar"}</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.singup} onPress={() => navigation.replace('Login')}>
-          <Text style={styles.singupTextExit}>Voltar</Text>
+        <TouchableOpacity style={styles.signup} onPress={() => navigation.replace('Login')}>
+          <Text style={styles.signupTextExit}>Voltar</Text>
         </TouchableOpacity>
       </View>
-
     </View>
   );
 }
@@ -95,11 +137,16 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 
-  singup: {
+  errorText: {
+    color: '#ff0000',
+    fontSize: 12,
+    },
+
+  signup: {
     alignItems: 'center',
     marginTop: 20,
   },
-  singupText: {
+  signupTextExit: {
     fontSize: 14,
     color: '#0099ff',
     textDecorationLine: 'none',

@@ -1,11 +1,29 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Linking, ActivityIndicator } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../services/firebaseConfig'; 
 
+export default function LoginScreen({ navigation }: any)  {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
 
-export default function LoginScreen({ navigation }: any) {
   const handleLogin = () => {
-    navigation.replace('Splash');
+    setLoading(true);
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+        navigation.replace('Splash');
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        console.log(errorMessage);
+        setError(errorMessage); 
+      })
+      .finally(() => setLoading(false)); 
   };
 
   return (
@@ -16,24 +34,48 @@ export default function LoginScreen({ navigation }: any) {
           style={styles.input}
           placeholder="E-mail"
           keyboardType="email-address"
+          value={email}
+          onChangeText={(val) => setEmail(val)}
         />
         <TextInput
           style={styles.input}
           placeholder="Senha"
           secureTextEntry
+          value={password}
+          onChangeText={(val) => setPassword(val)}
         />
-        <TouchableOpacity style={styles.forgotPassword} onPress={() => Linking.openURL('#')} accessible={true} accessibilityRole="link">
+        {error && <Text style={styles.errorText}>{error}</Text>} 
+        
+        <TouchableOpacity 
+          style={styles.forgotPassword} 
+          onPress={() => Linking.openURL('#')} 
+          accessible={true} 
+          accessibilityRole="link">
           <Text style={styles.forgotPasswordText}>Esqueceu a senha?</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Entrar</Text>
+        
+        <TouchableOpacity 
+          style={styles.loginButton} 
+          onPress={handleLogin}
+          disabled={loading} 
+        >
+          {loading ? ( 
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.loginButtonText}>Entrar</Text>
+          )}
         </TouchableOpacity>
-        <TouchableOpacity style={styles.singup} onPress={() => navigation.replace('Singup')}>
-          <Text style={styles.singupText}>Criar conta</Text>
+
+        <TouchableOpacity 
+          style={styles.signup} 
+          onPress={() => navigation.replace('Signup')}
+        >
+          <Text style={styles.signupText}>Criar conta</Text>
         </TouchableOpacity>
       </View>
+
       <View style={styles.socialAccountContainer}>
-        <Text style={styles.socialAccountTitle}>Or Sign in with</Text>
+        <Text style={styles.socialAccountTitle}>Ou entre com</Text>
         <View style={styles.socialAccounts}>
           <TouchableOpacity style={styles.socialButton}>
             <AntDesign name="google" size={24} color="#fff" />
@@ -43,6 +85,7 @@ export default function LoginScreen({ navigation }: any) {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
@@ -77,6 +120,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 5,
   },
+
+  errorText: {
+    color: '#FF0000',
+    fontSize: 12,
+    marginBottom: 10,
+    },
   forgotPassword: {
     marginTop: 10,
     alignSelf: 'flex-start',
@@ -99,11 +148,11 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 
-  singup: {
+  signup: {
     alignItems: 'center',
     marginTop: 20,
   },
-  singupText: {
+  signupText: {
     fontSize: 14,
     color: '#0099ff',
     textDecorationLine: 'none',

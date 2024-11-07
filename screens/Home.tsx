@@ -11,7 +11,7 @@ export default function Index({ navigation }: any) {
   const [loading, setLoading] = useState(false);
   const [travel, setTravel] = useState('');
 
-  const KEY_GPT = "Minha Chave";
+  const KEY_GPT = 'aaaa';
 
   async function handleGenerate() {
     if (city === "") {
